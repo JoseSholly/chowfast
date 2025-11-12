@@ -1,8 +1,9 @@
 import os
+from datetime import timedelta
 
+from chowfast_backend.env import BASE_DIR
 from decouple import config
 from dotenv import load_dotenv
-from chowfast_backend.env import BASE_DIR
 
 from .base import *
 
@@ -43,3 +44,19 @@ STATICFILES_DIRS = [
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+
+
+SIMPLE_JWT = {
+    # How long the access token is valid (e.g., 5 minutes, 1 hour)
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3), 
+    
+    # How long the refresh token is valid (e.g., 1 day, 30 days)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    
+    # Other security settings
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': config("SECRET_KEY"), # Uses your Django secret key
+    'AUTH_HEADER_TYPES': ('Bearer',), # Standard header type
+}

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 from chowfast_backend.env import BASE_DIR
@@ -48,6 +49,12 @@ INSTALLED_APPS = [
     "menus",
     "orders",
     "payments",
+
+    # third party
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_yasg", 
+
 ]
 
 MIDDLEWARE = [
@@ -65,7 +72,7 @@ ROOT_URLCONF = 'chowfast_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,3 +147,44 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.User"
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",  # Default permission
+    ),
+
+    
+    # Define how data is returned (JSON is the default)
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer', # Great for development
+    ],
+    
+}
+
+# settings.py
+
+SWAGGER_SETTINGS = {
+   'USE_SESSION_AUTH': False, # Recommended if using JWT (Simple JWT)
+   'SECURITY_DEFINITIONS': {
+      # This block sets up JWT authentication for the documentation interface
+      'Bearer': {
+          'type': 'apiKey',
+          'name': 'Authorization',
+          'in': 'header'
+      }
+   }
+}
