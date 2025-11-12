@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "vendors",
     "menus",
     "orders",
+    "payments",
 ]
 
 MIDDLEWARE = [
