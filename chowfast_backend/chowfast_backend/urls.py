@@ -67,4 +67,5 @@ urlpatterns = [
         "api/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
     path("api/v1/customers/", include("api.v1.customers.urls")),
+    path("api/v1/vendors/", include("api.v1.vendors.urls")),
 ]

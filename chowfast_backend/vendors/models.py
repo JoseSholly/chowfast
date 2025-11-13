@@ -31,3 +31,9 @@ class Vendor(models.Model):
 
     def __str__(self):
         return f"{self.vendor_id or 'Pending ID'} - {self.business_name}"
+    
+    @property
+    def phone_number(self):
+        if self.user.phone_number:
+            return self.user.phone_number
+        return None

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .serializers import CustomerSerializer, CustomerInfoSerializer
+from .serializers import CustomerInfoSerializer, CustomerSerializer
 
 
 class BaseResponseSerializer(serializers.Serializer):
