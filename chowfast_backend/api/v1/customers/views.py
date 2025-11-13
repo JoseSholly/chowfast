@@ -1,6 +1,7 @@
 from customers.models import Customer
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,6 +16,7 @@ from .serializers import CustomerSerializer
 class CreateCustomerView(APIView):
     serializer_class = CustomerSerializer
     http_method_names = ["post"]
+    permission_classes = [AllowAny]
     """
     Create a new customer.
     """
@@ -61,7 +63,9 @@ class RetrieveCustomerView(APIView):
     """
     Retrieve a specific customer or all customers.
     """
-
+    permission_classes = [AllowAny]
+    serializer_class = CustomerSerializer
+    http_method_names = ["get"]
     @swagger_auto_schema(
         tags=["Customers"],
         operation_summary="Get customer account",
@@ -84,11 +88,11 @@ class RetrieveCustomerView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            serializer = CustomerSerializer(customer)
+            serializer = self.serializer_class(customer)
             return Response(serializer.data)
 
         customers = Customer.objects.all()
-        serializer = CustomerSerializer(customers, many=True)
+        serializer = self.serializer_class(customers, many=True)
         data = serializer.data
         return Response(
             {
@@ -107,6 +111,7 @@ class UpdateCustomerView(APIView):
 
     serializer_class = CustomerSerializer
     http_method_names = ["put"]
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         tags=["Customers"],
