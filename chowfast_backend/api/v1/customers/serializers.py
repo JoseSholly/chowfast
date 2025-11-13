@@ -1,12 +1,6 @@
 from customers.models import Customer
-from django.core.validators import RegexValidator
 from rest_framework import serializers
-
-phone_regex = RegexValidator(
-    regex=r"^\+?1?\d{9,15}$",
-    message="Phone number must be in international format (e.g. +2348012345678)",
-)
-
+from api.v1.vendors.validators import phone_regex
 
 class CustomerSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(
