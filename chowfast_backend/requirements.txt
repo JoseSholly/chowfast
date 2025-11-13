@@ -7,3 +7,7 @@ djangorestframework==3.16.1
 djangorestframework-simplejwt==5.5.1 
 drf-yasg==1.21.11
 argon2-cffi==25.1.0
+django-cors-headers==4.9.0
+gunicorn==23.0.0
+brotli==1.2.0 
+whitenoise==6.11.0

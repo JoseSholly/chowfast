@@ -1,8 +1,9 @@
 import os
 from datetime import timedelta
+from urllib.parse import parse_qsl, urlparse
 
 from chowfast_backend.env import BASE_DIR
-from decouple import config
+from decouple import Csv, config
 from dotenv import load_dotenv
 
 from .base import *
@@ -16,20 +17,27 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("POSTGRESQL_DB_NAME"),
-        "USER": config("POSTGRESQL_DB_USER"),
-        "PASSWORD": config("POSTGRESQL_DB_PASSWORD"),
-        "HOST": config("POSTGRESQL_DB_HOST"),
-        "PORT": config("POSTGRESQL_DB_PORT"),
-        "CONN_MAX_AGE": 600,
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': tmpPostgres.path.replace('/', ''),
+        'USER': tmpPostgres.username,
+        'PASSWORD': tmpPostgres.password,
+        'HOST': tmpPostgres.hostname,
+        'PORT': 5432,
+        'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
     }
 }
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
+allowed_host_value = config("ALLOWED_HOSTS")
+
+if allowed_host_value:
+    ALLOWED_HOSTS.extend(allowed_host_value.split(","))
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -42,10 +50,23 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
+# This production code might break development mode, so we check # This production code might break development mode, so we check whether we're in DEBUG mode
+if not DEBUG:
+    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+    WHITENOISE_AUTOREFRESH = True
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_COMPRESS = True
+    WHITENOISE_MANIFEST_STRICT = True
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 SECURE_BROWSER_XSS_FILTER = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 SECURE_HSTS_SECONDS = 31536000          # 1 year
@@ -53,6 +74,22 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS",
+    cast=Csv(),
+    default="http://localhost:3000"
+)
+
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    cast=Csv(),
+    default="http://localhost:3000"
+)
 
 SIMPLE_JWT = {
     # How long the access token is valid (e.g., 5 minutes, 1 hour)
@@ -102,3 +139,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
     
 }
+
+# From WSGI
+# gunicorn chowfast_backend.wsgi:application --workers 3
+
+# To ASGI (just add this)
+# gunicorn chowfast_backend.asgi:application -k uvicorn.workers.UvicornWorker --workers 3
