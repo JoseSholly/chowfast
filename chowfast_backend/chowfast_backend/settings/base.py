@@ -182,3 +182,12 @@ JAZZMIN_SETTINGS = {
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_header": "ChowFast",
 }
+
+
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+DEFAULT_FROM_EMAIL = "no-reply@chowfast.com"
+
+ANYMAIL = {
+    "MAILGUN_API_KEY": config("MAILGUN_API_KEY", cast=str),
+    "MAILGUN_SENDER_DOMAIN": config("MAILGUN_DOMAIN_NAME", cast=str),
+}
