@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import get_user_model
 
 # from django.contrib.auth.password_validation import validate_password
@@ -5,11 +7,14 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import OTP, SessionToken
+from vendors.email_service import send_signup_otp_email
 from vendors.models import Vendor
 
 from .validators import phone_regex
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 class VendorEmailSignupSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, max_length=255)
     password = serializers.CharField(write_only=True, min_length=8, max_length=75, required=True)
@@ -32,7 +37,7 @@ class VendorEmailSignupSerializer(serializers.Serializer):
         user.save()
 
         # Generate OTP
-        raw_otp = OTP.objects.create_otp(user, purpose="email_verification")
+        otp, raw_code = OTP.objects.create_otp(user, purpose="email_verification")
 
         # Create secure session token (single-use, time-limited)
         session_token = SessionToken.objects.create_token(
@@ -41,9 +46,13 @@ class VendorEmailSignupSerializer(serializers.Serializer):
         )
 
         # TODO: Send OTP via email
-        # send_otp_email(user.email, raw_otp)
+        # Send OTP to user email
+        try:
+            send_signup_otp_email(user, raw_code)
+        except Exception as e:
+            logger.error(f"Failed to send OTP email to {user.email}: {str(e)}")
 
-        print(f"OTP for {user.email}: {raw_otp}")  # For testing purposes only
+        # print(f"OTP for {user.email}: {raw_code}")  # For testing purposes only
 
         return {
             "user": user,

@@ -185,7 +185,7 @@ JAZZMIN_SETTINGS = {
 
 
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-DEFAULT_FROM_EMAIL = "no-reply@chowfast.com"
+DEFAULT_FROM_EMAIL = "ChowFast <no-reply@chowfast.com>"
 
 ANYMAIL = {
     "MAILGUN_API_KEY": config("MAILGUN_API_KEY", cast=str),
