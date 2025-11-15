@@ -22,7 +22,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = None  
     email = models.EmailField(unique=True, max_length=255, db_index=True)
-    phone_number = models.CharField(max_length=20, unique=True, db_index=True)
+    phone_number = models.CharField(max_length=20, unique=True, db_index=True, blank=True, null=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default="vendor")
 
     is_active = models.BooleanField(default=True)

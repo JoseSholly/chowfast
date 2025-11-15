@@ -7,7 +7,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import OTP, SessionToken
-from vendors.email_service import send_signup_otp_email
+from vendors.email_service import send_signup_otp_email, send_vendor_welcome_email
 from vendors.models import Vendor
 
 from .validators import phone_regex
@@ -89,6 +89,12 @@ class CompleteVendorProfileSerializer(serializers.Serializer):
         # Mark vendor as verified
         vendor.verified = True
         vendor.save()
+
+        # Send Onboarding mail
+        try:
+            send_vendor_welcome_email(vendor)
+        except Exception as e:
+            logger.error(f"Failed to send OTP email to {user.email}: {str(e)}")
 
         return vendor
 

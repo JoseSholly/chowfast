@@ -35,3 +35,15 @@ def send_signup_otp_email(user, otp):
         context=context,
     )
 
+def send_vendor_welcome_email(vendor):
+    subject = "Welcome to ChowFast, Vendor!"
+    context = {
+        "vendor": vendor,
+    }
+
+    send_html_email(
+        subject=subject,
+        to_email=vendor.user.email,
+        template_name="email/vendor_welcome_email.html",
+        context=context,
+    )
