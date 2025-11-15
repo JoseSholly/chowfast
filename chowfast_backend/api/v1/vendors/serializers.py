@@ -195,12 +195,16 @@ class ResendOTPSerializer(serializers.Serializer):
         )
 
         # Generate new OTP
-        raw_otp = OTP.objects.create_otp(user, purpose="email_verification")
+        otp, raw_code = OTP.objects.create_otp(user, purpose="email_verification")
 
         # Send OTP
-        # send_otp_via_email(user.email, raw_otp)
+        # Send OTP to user email
+        try:
+            send_signup_otp_email(user, raw_code)
+        except Exception as e:
+            logger.error(f"Failed to send OTP email to {user.email}: {str(e)}")
 
-        print(f"OTP for {user.email}: {raw_otp}")  # For testing purposes only
+        print(f"OTP for {user.email}: {raw_code}")  # For testing purposes only
 
         return {
             "session_token": str(session_token.token)
