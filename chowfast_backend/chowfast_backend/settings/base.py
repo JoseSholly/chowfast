@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_yasg", 
     "corsheaders",
+    "cloudinary_storage",
+    "cloudinary",
 
 ]
 
@@ -191,3 +193,16 @@ ANYMAIL = {
     "MAILGUN_API_KEY": config("MAILGUN_API_KEY", cast=str),
     "MAILGUN_SENDER_DOMAIN": config("MAILGUN_DOMAIN_NAME", cast=str),
 }
+
+
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+    "DEFAULT_FOLDER": "NuwellAI_images",
+    "STATIC_IMAGES_EXTENSIONS": ["jpg", "jpeg", "png", "gif", "webp"],
+    
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"

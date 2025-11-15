@@ -18,7 +18,7 @@ class MenuItemAdmin(admin.ModelAdmin):
             'fields': ('vendor', 'name', 'category', 'price', 'available')
         }),
         ('Details', {
-            'fields': ('description', 'image_url', 'image_preview')
+            'fields': ('description', 'image', 'image_preview')
         }),
         ('Metadata', {
             'fields': ('id', 'created_at'),
