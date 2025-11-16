@@ -68,4 +68,5 @@ urlpatterns = [
     ),
     path("api/v1/customers/", include("api.v1.customers.urls")),
     path("api/v1/vendors/", include("api.v1.vendors.urls")),
+    path("api/v1/users/", include("api.v1.users.urls")),
 ]
