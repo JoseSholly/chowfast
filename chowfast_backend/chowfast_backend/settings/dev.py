@@ -46,9 +46,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
 
 # This production code might break development mode, so we check # This production code might break development mode, so we check whether we're in DEBUG mode
 if not DEBUG:
