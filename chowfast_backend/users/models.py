@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManager, OTPManager, SessionTokenManager
 from .mixins import TimestampMixin
@@ -29,6 +30,7 @@ class User(AbstractUser):
     is_activated = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+    last_active = models.DateTimeField(null=True, blank=True, help_text=_("The last time the user was active"))
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["phone_number"]

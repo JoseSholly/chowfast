@@ -5,7 +5,6 @@ from django.db import models
 from vendors.models import Vendor
 from django.utils.text import slugify
 
-
 class MenuItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     vendor = models.ForeignKey(Vendor, related_name="menu_items", on_delete=models.CASCADE)

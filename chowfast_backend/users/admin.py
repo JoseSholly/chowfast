@@ -11,13 +11,13 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ("user_type", "is_active", "is_activated", "is_staff", "date_joined")
     search_fields = ("email", "phone_number")
     ordering = ("-date_joined",)
-    readonly_fields = ("id", "date_joined", "last_login")
+    readonly_fields = ("id", "date_joined", "last_login", "last_active")
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal Info", {"fields": ("phone_number", "user_type")}),
         ("Permissions", {"fields": ("is_active", "is_activated", "is_staff", "is_superuser", "groups", "user_permissions")}),
-        ("Important dates", {"fields": ("last_login", "date_joined")}),
+        ("Important dates", {"fields": ("last_active","last_login", "date_joined")}),
         ("System", {"fields": ("id",)}),
     )
 
